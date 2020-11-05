@@ -1,7 +1,7 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import SelectorCard from "./SelectorCard";
+import SelectorCard from './SelectorCard'
 
 class SelectorTable extends Component {
   static propTypes = {
@@ -19,94 +19,94 @@ class SelectorTable extends Component {
     selected: PropTypes.object.isRequired,
     cardTemplate: PropTypes.func.isRequired,
     cardTemplateProps: PropTypes.object,
-    onChange: PropTypes.func,
-  };
+    onChange: PropTypes.func
+  }
 
   static defaultProps = {
     dataPoints: [],
     selected: {},
     cardTemplate: SelectorCard,
-    cardTemplateProps: {},
-  };
+    cardTemplateProps: {}
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = { expanded: null }
+  }
 
   handleToggle = dataPoint => {
-    console.log("SelectorTable.handleToggle()");
-    const {onChange, unique, selected} = this.props;
+    console.log('SelectorTable.handleToggle()')
+    const { onChange, unique, selected } = this.props
 
     const newSelected = {
       ...selected
-    };
+    }
     if (newSelected[dataPoint[unique]]) {
       // We're unchecking this row, so remove the key
-      delete newSelected[dataPoint[unique]];
+      delete newSelected[dataPoint[unique]]
     } else {
       // We're checking this row, so add it in
       newSelected[dataPoint[unique]] = true
     }
 
-    onChange(newSelected);
-  };
-
-  /*
-  handleSelectAll = () => {
-    const { data, unique, selected, onChange } = this.props
-
-    // If none are selected, select them all
-    // If some are selected, unselect them all (aka select none of them)
-    const areSomeSelected = Object.keys(selected).length > 0
-    const rows = {}
-
-    if (!areSomeSelected) {
-      data.forEach(row => {
-        rows[row[unique]] = true
-      })
-    }
-
-    onChange(rows)
+    onChange(newSelected)
   }
-  */
 
-  render() {
-    const Template = this.props.cardTemplate;
-    const allowSelectUnselect = (typeof this.props.onChange !== "undefined");
+  cardExpandCollapse = dataPoint => {
+    if (dataPoint === this.state.expanded) {
+      this.setState({ expanded: null })
+    } else {
+      this.setState({ expanded: dataPoint })
+    }
+  }
 
-    const listedCards = this.props.dataPoints.map((dataPoint) => {
-      let thisSelected;
-      let {unique, selected} = this.props;
+  render () {
+    const Template = this.props.cardTemplate
+    const allowSelectUnselect = typeof this.props.onChange !== 'undefined'
+
+    const listedCards = this.props.dataPoints.map(dataPoint => {
+      let thisSelected
+      let { unique, selected } = this.props
+      let { expanded } = this.state
       if (selected[dataPoint[unique]]) {
-        thisSelected = selected[dataPoint[unique]];
+        thisSelected = selected[dataPoint[unique]]
       } else {
-        thisSelected = false;
+        thisSelected = false
       }
-      let key = selected[dataPoint[unique]];
+      let thisExpanded = expanded === dataPoint
+      console.log(thisExpanded)
+      let key = selected[dataPoint[unique]]
       if (allowSelectUnselect) {
-        return <Template
-          key={key}
-          selected={thisSelected}
-          dataPoint={dataPoint}
-          onToggle={this.handleToggle}
-          {...this.props.cardTemplateProps}
-        />;
+        return (
+          <Template
+            key={key}
+            selected={thisSelected}
+            onExpandCollapse={this.cardExpandCollapse}
+            expanded={thisExpanded}
+            dataPoint={dataPoint}
+            onToggle={this.handleToggle}
+            {...this.props.cardTemplateProps}
+          />
+        )
       } else {
-        return <Template
-          key={key}
-          selected={thisSelected}
-          dataPoint={dataPoint}
-          {...this.props.cardTemplateProps}
-        />;
+        return (
+          <Template
+            key={key}
+            selected={thisSelected}
+            onExpandCollapse={this.cardExpandCollapse}
+            expanded={thisExpanded}
+            dataPoint={dataPoint}
+            {...this.props.cardTemplateProps}
+          />
+        )
       }
-    });
+    })
 
     return (
       <div>
-        <div key="TitleDiv">
-          SelectorTable
-        </div>
-        <div key="ChildDiv">
-          {listedCards}
-        </div>
+        <div key='ChildDiv'>{listedCards}</div>
       </div>
-    );
+    )
   }
 }
 
