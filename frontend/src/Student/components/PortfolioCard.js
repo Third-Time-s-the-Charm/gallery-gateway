@@ -5,6 +5,7 @@ import Moment from 'react-moment'
 import { Row, Col, Button } from 'reactstrap'
 import moment from 'moment'
 import { FlipCard, NewPiece } from './ImageCard'
+import Link from "react-router-dom/Link";
 
 const Card = styled.div`
   background-color: #f8f9fa;
@@ -34,7 +35,7 @@ const SubmittedEntries = ({ portfolio, deletePiece }) =>
 
 const PortfolioCard = props => (
   <Card>
-    <h2><Link to='/viewScholarships?id=${props.portfolio.portfolioPeriod.id}'><Button color='primary'>View Available Scholarships</Button></Link></h2>
+    <h2><Link to={'/viewScholarships?id='+props.portfolio.portfolioPeriod.id}><Button color='primary'>View Available Scholarships</Button></Link></h2>
     <Row>
       <Col>
         <div>

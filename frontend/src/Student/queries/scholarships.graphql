@@ -1,5 +1,5 @@
-query Scholarship {
-  scholarshipByPeriod(periodId: periodId) {
+query Scholarship($periodId: ID!) {
+  scholarshipByPeriod(periodId: $periodId) {
     id,
     scholarships{
       id,
