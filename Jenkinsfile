@@ -18,10 +18,6 @@ pipeline {
         stage('Deploy'){
             steps{
                 echo 'Deploying'
-                dir('frontend'){
-                    sh 'npm start'
-            
-                }
             }
         }
     }
