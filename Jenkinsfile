@@ -4,9 +4,9 @@ pipeline {
         stage('Build'){
             steps {
                 echo 'Building'
-                sh 'cd frontend'
-                sh 'ls'
-                sh 'npm install'
+                dir('frontend'){
+                    sh 'npm install'
+                }
             }
         }
         stage('Test') {
