@@ -1,2 +1,4 @@
 FROM node:10
-CMD npm install
+
+WORKDIR /frontend
+CMD ['npm', 'start']
