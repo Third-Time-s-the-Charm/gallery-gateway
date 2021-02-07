@@ -4,7 +4,8 @@ pipeline {
         stage('Build'){
             steps {
                 echo 'Building'
-                sh 'ls'
+                sh 'cd frontend'
+                sh 'npm install'
             }
         }
         stage('Test') {
