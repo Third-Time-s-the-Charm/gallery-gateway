@@ -5,6 +5,7 @@ pipeline {
             steps {
                 echo 'Building'
                 sh 'cd frontend'
+                sh 'ls'
                 sh 'npm install'
             }
         }
