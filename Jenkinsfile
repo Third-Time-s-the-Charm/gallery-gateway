@@ -6,6 +6,7 @@ pipeline {
                 echo 'Building'
                 dir('frontend'){
                     sh 'npm install'
+            
                 }
             }
         }
@@ -17,6 +18,10 @@ pipeline {
         stage('Deploy'){
             steps{
                 echo 'Deploying'
+                dir('frontend'){
+                    sh 'npm start'
+            
+                }
             }
         }
     }
