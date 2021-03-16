@@ -3,8 +3,12 @@ import { ADMIN, JUDGE } from "../../constants";
 import Scholarship from "../../models/scholarship";
 import PortfolioPeriod from "../../models/portfolioPeriod"
 
-export function scholarship(_, args, req) {
 
+export function scholarship(_, args, req) {
+  return Scholarship.findById(args.id);
+}
+
+export function scholarships(_, args, req) {
   if (
     req.auth.type !== ADMIN
   ) {
@@ -19,18 +23,3 @@ export function scholarship(_, args, req) {
   return Scholarship.findAll(order)
 }
 
-export function scholarshipByPeriod(_, args, req ) {
-
-  if (
-    req.auth.type !== ADMIN && req.auth.type !== STUDENT
-  ) {
-    throw new UserError("Permission Denied");
-  }
-
-  const periodId  = args.periodId;
-  
-  return PortfolioPeriod.findOne({
-    where: {id: periodId},
-    include: Scholarship
-  });
-}

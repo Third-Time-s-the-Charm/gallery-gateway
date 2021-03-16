@@ -363,6 +363,18 @@ input ScholarshipInput{
     degreePrograms: String
 }
 
+input ScholarshipUpdate{
+    name: String!
+    description: String!
+    requiredPhotos: Int!
+    fulltime: Boolean!
+    renewable: Boolean!
+    requiresEssay: Boolean!
+    gpa: Float
+    yearStatus: String
+    degreePrograms: String
+}
+
 enum UserType {
     STUDENT
     ADMIN
@@ -392,6 +404,8 @@ type Query {
     entries(showId: ID, studentUsername: String): [Entry]
     scholarship(orderBy: OrderByItem): [Scholarship]
     scholarshipByPeriod(periodId: ID!): PeriodScholarships
+    scholarships(orderBy: OrderByItem): [Scholarship]
+    scholarship(id: ID!): Scholarship
 }
 
 type Mutation {
@@ -411,6 +425,7 @@ type Mutation {
     removeFromPortfolioPeriod(portfolioPeriodId: ID!, usernames: [String]!): Boolean
 
     createPortfolioPeriod(input: PortfolioPeriodInput!): PortfolioPeriod
+    updatePortfolioPeriod(id: ID!, input: PortfolioPeriodInput!): PortfolioPeriod
 
     createPhoto(input: PhotoInput!): Show
     createPortfolioPhoto(input: PortfolioPhotoInput!): Portfolio
@@ -421,6 +436,7 @@ type Mutation {
     updateEntry(id: ID!, input: EntryUpdate!): Entry
 
     createScholarship(input: ScholarshipInput!): Scholarship
+    updateScholarship(id: ID!, input: ScholarshipUpdate!): Scholarship
     deletePiece(id: ID!): Boolean
 
     vote(input: VoteInput): Vote
