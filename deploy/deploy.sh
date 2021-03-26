@@ -109,7 +109,7 @@ ABSTRACTION_DB_USER=gallerygateway
 ABSTRACTION_DB_HOST=localhost
 ABSTRACTION_DB_PASS=`cat $SCRIPT_ROOT/mysql_password.txt`
 SAML_CALLBACK_URL=https://gallerygateway.rit.edu/backend/auth/login/callback
-SAML_ENTRY_POINT=https://login.cias.rit.edu/saml2/idp/SSOService.php
+SAML_ENTRY_POINT=https://login.cad.rit.edu/saml2/idp/SSOService.php
 ISSUER=https://gallerygateway.rit.edu
 SAML_SUCCESS_URL=https://gallerygateway.rit.edu
 ENDENV
