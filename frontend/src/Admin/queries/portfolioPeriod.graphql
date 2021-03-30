@@ -18,8 +18,16 @@ query PortfolioPeriod($id: ID!){
       submitted
     }
     scholarships {
-      id
-      name
+      id,
+      name,
+      gpa,
+      yearStatus,
+      requiredPhotos,
+      description,
+      fulltime,
+      renewable,
+      requiresEssay,
+      degreePrograms
     }
   }
 }

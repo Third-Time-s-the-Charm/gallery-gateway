@@ -15,7 +15,7 @@ const Student = () => (
     <Switch>
       <Route exact path='/portfolio' component={Portfolio} />
       <Route exact path='/' component={Dashboard} />
-      <Route exact path='/viewScholarships' component={Scholarships} />
+      <Route exact path='/viewScholarships/:portfolioPeriodID' component={Scholarships} />
       <Route path='/submit' component={Submit} />
       <Route path='/add' component={Add} />
       <Route component={NotFound} />

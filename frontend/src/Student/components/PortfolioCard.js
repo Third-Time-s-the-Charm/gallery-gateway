@@ -16,6 +16,7 @@ const Card = styled.div`
 `
 
 const SubmittedEntries = ({ portfolio, deletePiece }) =>
+
   portfolio.pieces.map(piece => (
     <Col
       md='3'
@@ -33,9 +34,10 @@ const SubmittedEntries = ({ portfolio, deletePiece }) =>
     </Col>
   ))
 
+
 const PortfolioCard = props => (
   <Card>
-    <h2><Link to={'/viewScholarships?id='+props.portfolio.portfolioPeriod.id}><Button color='primary'>View Available Scholarships</Button></Link></h2>
+    <h2><Link to={'/viewScholarships/'+props.portfolio.portfolioPeriod.id}><Button color='primary'>View Available Scholarships</Button></Link></h2>
     <Row>
       <Col>
         <div>

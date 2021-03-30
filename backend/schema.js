@@ -349,6 +349,7 @@ type Scholarship{
 
 type PeriodScholarships{
     id: ID!,
+    name: String!,
     scholarships: [Scholarship]
 }
 

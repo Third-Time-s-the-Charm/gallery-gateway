@@ -44,7 +44,7 @@ class SelectorCard extends Component {
   }
 
   renderButtons (props) {
-    const { onToggle, onEdit, onDelete, dataPoint, selected } = props
+    const { onToggle, onEdit, onDelete, dataPoint, selected, allowSelect } = props
 
     return (
       <Fragment>
@@ -75,7 +75,7 @@ class SelectorCard extends Component {
               </Button>
             </Col>
           )}
-          {onToggle && (
+          {onToggle && allowSelect && (
             <Col>
               <Button
                 onClick={() => {

@@ -66,3 +66,9 @@ export function openPortfolioPeriod(_, args, req) {
     }
   });
 }
+
+export function scholarshipByPeriod(_, args, req){
+
+  return PortfolioPeriod.findById(args.periodId).then((portfolioPeriod) =>{return portfolioPeriod})
+
+}

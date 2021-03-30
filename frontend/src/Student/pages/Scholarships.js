@@ -4,17 +4,20 @@ import { Container, Row, Col } from 'reactstrap'
 import ViewScholarshipsTab from '../containers/ViewScholarshipsTab'
 
 const addIdPropFromQueryParams = () => {
-  return window.location.search.split('=')[1]
+  return id
+
 }
 
-const Scholarships = () => (
+const Scholarships = (props) => {
+  return (
+
   <Container>
     <Row>
       <Col>
-        <ViewScholarshipsTab id={addIdPropFromQueryParams()}/>
+        <ViewScholarshipsTab id={props.match.params.portfolioPeriodID} />
       </Col>
     </Row>
   </Container>
-)
+)}
 
 export default Scholarships

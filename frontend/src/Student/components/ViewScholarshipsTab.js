@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import ScholarshipSelectorTable from "../../shared/components/ScholarshipSelectorTable";
 import ScholarshipSelectorCard from "../../shared/components/ScholarshipSelectorCard";
 import Loading from "../../shared/components/Loading";
+const _ = require('lodash')
 
 class ViewScholarshipsTab extends Component {
   constructor(props) {
@@ -24,14 +25,15 @@ class ViewScholarshipsTab extends Component {
   };
 
   onChange = newSelected => {
-    console.log(newSelected);
     this.setState({selected: newSelected})
   };
 
   render () {
-    const { loading, scholarship } = this.props;
+    const { loading, portfolioPeriod } = this.props;
+    const scholarships = _.get(portfolioPeriod, 'scholarships')
     return (
       <div>
+        {console.log(this.props)}
         <h2><Link to='/portfolio'><Button color='primary'>Back to Portfolio</Button></Link></h2>
       <Row>
         <Col>
@@ -40,7 +42,7 @@ class ViewScholarshipsTab extends Component {
           ) : (
             <ScholarshipSelectorTable
               selected={this.state.selected}
-              dataPoints={scholarship.scholarships}
+              dataPoints={scholarships}
               unique={"id"}
               onChange={this.onChange}
               cardTemplate={ScholarshipSelectorCard}
