@@ -2,6 +2,7 @@ import React, { Fragment, Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   Button,
+  Fade,
   Modal,
   ModalHeader,
   ModalBody,
@@ -17,6 +18,7 @@ class PortfolioSubmissionModal extends Component {
       toggleFunction: PropTypes.func.isRequired,
       portfolio: PropTypes.shape({
         id: PropTypes.string,
+        submitted: PropTypes.bool,
         pieces: PropTypes.arrayOf(
           PropTypes.shape({
             id: PropTypes.string.isRequired,
@@ -53,7 +55,8 @@ class PortfolioSubmissionModal extends Component {
     state = {
       displaySubmissionSuccess: false,
       selectedScholarships: {},
-      isValidSubmission: false
+      isValidSubmission: false,
+      submissionError: ''
     }
 
     closeSuccessModal = () => {
@@ -77,9 +80,21 @@ class PortfolioSubmissionModal extends Component {
         return portfolioPeriod.scholarships.find(scholarship => scholarship.id === ID).requiredPhotos
       })
 
-      const validPortfolio = scholarshipIDs.length > 0 && portfolio.pieces.length >= Math.max(...scholarshipRequiredPieces)
+      // Portfolio validation
+      // Ensures the portfolio to be submitted has the appropriate number of pieces
+      // TODO - add validation for yearLevel & academic program
+      let errorMessage = ''
+      let isValid = false
+      if (!scholarshipIDs.length > 0) {
+        errorMessage = 'Please select at least one scholarship'
+      } else if (portfolio.pieces.length < Math.max(...scholarshipRequiredPieces)) {
+        errorMessage = 'One of the selected scholarships requires more images than you have uploaded'
+      } else {
+        errorMessage = ''
+        isValid = true
+      }
 
-      this.setState({ selectedScholarships, isValidSubmission: validPortfolio })
+      this.setState({ selectedScholarships, isValidSubmission: isValid, submissionError: errorMessage })
     }
 
     render () {
@@ -100,6 +115,7 @@ class PortfolioSubmissionModal extends Component {
                 studentView={true} />
             </ModalBody>
             <ModalFooter>
+              <Fade in={!this.state.isValidSubmission}>{this.state.submissionError}</Fade>
               <Button
                 color='secondary'
                 onClick={toggleFunction}
