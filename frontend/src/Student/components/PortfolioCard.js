@@ -5,14 +5,11 @@ import Moment from 'react-moment'
 import {
   Row,
   Col,
-  Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter } from 'reactstrap'
+  Badge,
+  Button } from 'reactstrap'
 import moment from 'moment'
 import { FlipCard, NewPiece } from './ImageCard'
-import ScholarshipsTable from 'shared/components/ScholarshipsTable'
+import PortfolioSubmissionModal from './PortfolioSubmissionModal'
 
 const Card = styled.div`
   background-color: #f8f9fa;
@@ -42,8 +39,11 @@ const SubmittedEntries = ({ portfolio, deletePiece }) =>
 
 class PortfolioCard extends Component {
   static propTypes = {
+    submitPortfolio: PropTypes.func.isRequired,
+    handleError: PropTypes.func.isRequired,
     portfolio: PropTypes.shape({
       id: PropTypes.string,
+      submitted: PropTypes.bool,
       pieces: PropTypes.arrayOf(
         PropTypes.shape({
           id: PropTypes.string.isRequired,
@@ -58,11 +58,13 @@ class PortfolioCard extends Component {
         numPieces: PropTypes.number.isRequired,
         entryEnd: PropTypes.string,
         entryStart: PropTypes.string,
-        scholarships: PropTypes.arrayOf({
-          id: PropTypes.string.isRequired,
-          name: PropTypes.string.isRequired,
-          requiresEssay: PropTypes.bool
-        })
+        scholarships: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            requiresEssay: PropTypes.bool
+          })
+        )
       }),
       createdAt: PropTypes.string,
       updatedAt: PropTypes.string
@@ -76,12 +78,7 @@ class PortfolioCard extends Component {
   }
 
   state = {
-    isScholarshipSelectionOpen: false,
-    selectedScholarships: {}
-  }
-
-  handleSelectedScholarshipsChange = selectedScholarships => {
-    this.setState({ selectedScholarships })
+    isScholarshipSelectionOpen: false
   }
 
   onDismissScholarshipSelection = () => {
@@ -96,39 +93,26 @@ class PortfolioCard extends Component {
     })
   }
 
+  isSubmitted = () => {
+    if (this.props.portfolio.submitted) {
+      return <Badge color='success'>✓ Submitted</Badge>
+    } else {
+      return (null)
+    }
+  }
+
   render () {
-    const { portfolio } = this.props
+    const { portfolio, submitPortfolio, handleError } = this.props
+    const submitted = this.isSubmitted()
 
     return (
       <Fragment>
-        <Modal
+        <PortfolioSubmissionModal
           isOpen={this.state.isScholarshipSelectionOpen}
-        >
-          <ModalHeader toggle={this.onDismissScholarshipSelection}>
-            Scholarship Selection
-          </ModalHeader>
-          <ModalBody>
-            <ScholarshipsTable scholarships={portfolio.portfolioPeriod.scholarships}
-              selected={this.state.selectedScholarships}
-              onChange={this.handleSelectedScholarshipsChange} />
-          </ModalBody>
-          <ModalFooter>
-            <Button
-              color='secondary'
-              onClick={() => this.onDismissScholarshipSelection()}
-            >
-              Cancel
-            </Button>
-            <Button
-              color='primary'
-              onClick={() => {
-                this.onDismissScholarshipSelection()
-              }}
-            >
-              Submit Application
-            </Button>
-          </ModalFooter>
-        </Modal>
+          toggleFunction={this.onDismissScholarshipSelection}
+          portfolio={portfolio}
+          submitPortfolio={submitPortfolio}
+          handleError={handleError} />
         <Card>
           <Row>
             <Col>
@@ -150,6 +134,7 @@ class PortfolioCard extends Component {
               ) : (
                 <div>
                   <div>
+                    {submitted}
                     <h2>
                       <Button color='primary'
                         style={{cursor: 'pointer'}}
