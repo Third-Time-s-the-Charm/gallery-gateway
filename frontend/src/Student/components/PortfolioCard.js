@@ -1,11 +1,16 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import Moment from 'react-moment'
-import { Row, Col, Button } from 'reactstrap'
+import {
+  Row,
+  Col,
+  Badge,
+  Button } from 'reactstrap'
 import moment from 'moment'
 import { FlipCard, NewPiece } from './ImageCard'
 import Link from "react-router-dom/Link";
+import PortfolioSubmissionModal from './PortfolioSubmissionModal'
 
 const Card = styled.div`
   background-color: #f8f9fa;
@@ -34,84 +39,135 @@ const SubmittedEntries = ({ portfolio, deletePiece }) =>
     </Col>
   ))
 
-
-const PortfolioCard = props => (
-  <Card>
-    <h2><Link to={'/viewScholarships/'+props.portfolio.portfolioPeriod.id}><Button color='primary'>View Available Scholarships</Button></Link></h2>
-    <Row>
-      <Col>
-        <div>
-          <h2>{props.portfolio.portfolioPeriod.name}</h2>
-        </div>
-        <div>
-          <h5>
-            {props.portfolio.pieces.length}/{
-              props.portfolio.portfolioPeriod.numPieces
-            }{' '}
-            Pieces
-          </h5>
-        </div>
-      </Col>
-      <Col className='text-right'>
-        {moment().isAfter(moment(props.portfolio.portfolioPeriod.entryEnd)) ? (
-          <div>No Longer Accepting Applications</div>
-        ) : (
-          <div>
-            <div>
-              <h2>
-                <Button color='primary'>Apply</Button>
-              </h2>
-            </div>
-            <div>
-              Accepting Applications Until:{' '}
-              <Moment format='MMMM D, YYYY hh:mm:ss a'>
-                {props.portfolio.portfolioPeriod.entryEnd}
-              </Moment>
-            </div>
-          </div>
-        )}
-      </Col>
-    </Row>
-    <hr />
-    <Row style={{ minHeight: '250px' }} className='align-items-center'>
-      <Fragment>
-        {moment().isBefore(props.portfolio.portfolioPeriod.entryEnd) &&
-        props.portfolio.pieces.length <
-          props.portfolio.portfolioPeriod.numPieces ? (
-            <NewPiece {...props} />
-          ) : null}
-        <SubmittedEntries {...props} />
-      </Fragment>
-    </Row>
-  </Card>
-)
-
-PortfolioCard.propTypes = {
-  show: PropTypes.shape({
-    id: PropTypes.string,
-    name: PropTypes.string,
-    entryCap: PropTypes.number,
-    entries: PropTypes.arrayOf(
-      PropTypes.shape({
+class PortfolioCard extends Component {
+  static propTypes = {
+    submitPortfolio: PropTypes.func.isRequired,
+    handleError: PropTypes.func.isRequired,
+    portfolio: PropTypes.shape({
+      id: PropTypes.string,
+      submitted: PropTypes.bool,
+      pieces: PropTypes.arrayOf(
+        PropTypes.shape({
+          id: PropTypes.string.isRequired,
+          path: PropTypes.string,
+          pieceType: PropTypes.oneOf(['PHOTO', 'VIDEO', 'OTHER']).isRequired,
+          title: PropTypes.string.isRequired
+        })
+      ),
+      portfolioPeriod: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        entryType: PropTypes.oneOf(['PHOTO', 'VIDEO', 'OTHER']).isRequired,
-        invited: PropTypes.bool,
-        path: PropTypes.string,
-        provider: PropTypes.oneOf(['youtube', 'vimeo']),
-        videoId: PropTypes.string
-      })
-    ),
-    entryStart: PropTypes.string,
-    entryEnd: PropTypes.string,
-    judgingStart: PropTypes.string,
-    judgingEnd: PropTypes.string
-  }).isRequired
-}
+        name: PropTypes.string.isRequired,
+        numPieces: PropTypes.number.isRequired,
+        entryEnd: PropTypes.string,
+        entryStart: PropTypes.string,
+        scholarships: PropTypes.arrayOf(
+          PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            requiresEssay: PropTypes.bool
+          })
+        )
+      }),
+      createdAt: PropTypes.string,
+      updatedAt: PropTypes.string
+    }).isRequired
+  }
 
-PortfolioCard.defaultProps = {
-  show: {
-    entries: []
+  static defaultProps = {
+    portfolio: {
+      pieces: []
+    }
+  }
+
+  state = {
+    isScholarshipSelectionOpen: false
+  }
+
+  onDismissScholarshipSelection = () => {
+    this.setState({
+      isScholarshipSelectionOpen: false
+    })
+  }
+
+  onDisplayScholarshipSelection = () => {
+    this.setState({
+      isScholarshipSelectionOpen: true
+    })
+  }
+
+  isSubmitted = () => {
+    if (this.props.portfolio.submitted) {
+      return <Badge color='success'>✓ Submitted</Badge>
+    } else {
+      return (null)
+    }
+  }
+
+  render () {
+    const { portfolio, submitPortfolio, handleError } = this.props
+    const submitted = this.isSubmitted()
+
+    return (
+      <Fragment>
+        <PortfolioSubmissionModal
+          isOpen={this.state.isScholarshipSelectionOpen}
+          toggleFunction={this.onDismissScholarshipSelection}
+          portfolio={portfolio}
+          submitPortfolio={submitPortfolio}
+          handleError={handleError} />
+        <Card>
+          <Row>
+            <Col>
+              <div>
+                <h2>{portfolio.portfolioPeriod.name}</h2>
+              </div>
+              <div>
+                <h5>
+                  {portfolio.pieces.length}/{
+                    portfolio.portfolioPeriod.numPieces
+                  }{' '}
+              Pieces
+                </h5>
+              </div>
+            </Col>
+            <Col className='text-right'>
+              <Link to={"/viewScholarships/" + portfolio.portfolioPeriod.id} color="primary">View Available Scholarships</Link>
+              {moment().isAfter(moment(portfolio.portfolioPeriod.entryEnd)) ? (
+                <div>No Longer Accepting Applications</div>
+              ) : (
+                <div>
+                  <div>
+                    {submitted}
+                    <h2>
+                      <Button color='primary'
+                        style={{cursor: 'pointer'}}
+                        onClick={() => this.onDisplayScholarshipSelection()}>Apply</Button>
+                    </h2>
+                  </div>
+                  <div>
+                Accepting Applications Until:{' '}
+                    <Moment format='MMMM D, YYYY hh:mm:ss a'>
+                      {portfolio.portfolioPeriod.entryEnd}
+                    </Moment>
+                  </div>
+                </div>
+              )}
+            </Col>
+          </Row>
+          <hr />
+          <Row style={{ minHeight: '250px' }} className='align-items-center'>
+            <Fragment>
+              {moment().isBefore(portfolio.portfolioPeriod.entryEnd) &&
+          portfolio.pieces.length <
+            portfolio.portfolioPeriod.numPieces ? (
+                  <NewPiece {...this.props} />
+                ) : null}
+              <SubmittedEntries {...this.props} />
+            </Fragment>
+          </Row>
+        </Card>
+      </Fragment>
+    )
   }
 }
 
