@@ -442,7 +442,6 @@ type Mutation {
     updateScholarship(id: ID!, input: ScholarshipUpdate!): Scholarship
     deletePiece(id: ID!): Boolean
     submitPortfolio(id: ID!, scholarships: [ID]!): Boolean
-
     vote(input: VoteInput): Vote
 }
 

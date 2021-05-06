@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import styled from 'styled-components'
 
 import PortfolioCard from '../components/PortfolioCard'
+import ConfirmModal from '../components/ConfirmModal'
 import Loading from '../../shared/components/Loading'
 
 const NoShowsContainer = styled.div`
@@ -82,6 +83,7 @@ class Portfolios extends Component {
 }
 
 Portfolios.propTypes = {
+
   portfolios: PropTypes.array,
   portfoliosLoading: PropTypes.bool.isRequired,
   portfoliosError: PropTypes.object,
